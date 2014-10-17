@@ -10,11 +10,14 @@ import com.example.contacts.tools.Logging;
 
 public class HomeActivity extends ActionBarActivity {
 
+	private DialogUtils dialogUtils = new DialogUtils();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+		dialogUtils.addPermissionDialog();
 	}
 
 	@Override
