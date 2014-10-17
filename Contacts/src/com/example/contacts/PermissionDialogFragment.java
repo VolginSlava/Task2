@@ -9,9 +9,9 @@ public class PermissionDialogFragment extends DialogFragment {
 
 	}
 
+	private static final String DIALOG_FRAGMENT = "PermissionDialog";
+
 	private Listener listener;
-
-
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		return super.onCreateDialog(savedInstanceState);
