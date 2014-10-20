@@ -10,7 +10,7 @@ public class Finally {
 	private static final String MESSAGE = "Exception occures while trying to close resource";
 
 	public static void close(Closeable c) {
-		Logging.logEntrance(TAG);
+		Logging.logEntrance();
 		try {
 			if (c != null) {
 				c.close();

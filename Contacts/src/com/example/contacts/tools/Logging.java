@@ -4,17 +4,15 @@ import android.util.Log;
 
 public class Logging {
 
-	// private static final String DEFAULT_TAG = "log";
-
 	public static void logEntrance() {
 		logEntrance(getStackTraceElement(), null, null);
 	}
 
-	public static void logEntrance(String tag) {
+	public static void logEntranceWithTag(String tag) {
 		logEntrance(getStackTraceElement(), tag, null);
 	}
 
-	public static void logEntranceExtra(String extra) {
+	public static void logEntrance(String extra) {
 		logEntrance(getStackTraceElement(), null, extra);
 	}
 
@@ -31,6 +29,15 @@ public class Logging {
 		if (extra != null && !extra.isEmpty()) {
 			msg += ". " + extra;
 		}
-		Log.d(tag != null ? tag : element.getClass().getSimpleName(), msg);
+		Log.d(tag != null ? tag : getShortClassName(element), msg);
+	}
+
+	private static String getShortClassName(StackTraceElement element) {
+		String name = element.getClassName();
+		int indexOfClassName = name.lastIndexOf('.');
+		int indexOfSubclassName = name.lastIndexOf('$');
+		
+		int index = indexOfSubclassName != -1 ? indexOfSubclassName : indexOfClassName;
+		return name.substring(index + 1);
 	}
 }

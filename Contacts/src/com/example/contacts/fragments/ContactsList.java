@@ -20,7 +20,7 @@ public class ContactsList extends Fragment {
 	private static final String LIST_ITEMS_KEY = "listItems";
 
 	public static ContactsList newInstance(String[] listItems) {
-		Logging.logEntrance(CONTACTS_LIST);
+		Logging.logEntrance();
 
 		ContactsList list = new ContactsList();
 
@@ -36,7 +36,7 @@ public class ContactsList extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Logging.logEntrance(CONTACTS_LIST);
+		Logging.logEntrance();
 		listView = (ListView) inflater.inflate(R.layout.contacts_list, container, false);
 
 		if (savedInstanceState == null) {
@@ -56,20 +56,20 @@ public class ContactsList extends Fragment {
 	}
 
 	public void updateListItems(String[] listItems) {
-		Logging.logEntrance(CONTACTS_LIST);
+		Logging.logEntrance();
 		listView.setAdapter(getAdapter(listItems));
 		this.listItems = listItems;
 	}
 
 	private ArrayAdapter<String> getAdapter(String[] args) {
-		Logging.logEntrance(CONTACTS_LIST);
+		Logging.logEntrance();
 		return args != null ? new ArrayAdapter<String>(getActivity(), R.layout.contacts_list_item, args) : null;
 	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Logging.logEntrance(CONTACTS_LIST);
+		Logging.logEntrance();
 		
 		outState.putStringArray(LIST_ITEMS_KEY, listItems);
 	}

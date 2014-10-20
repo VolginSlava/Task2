@@ -15,7 +15,6 @@ import com.example.contacts.tools.Logging;
 
 public class PermissionDialogFragment extends DialogFragment {
 
-	private static final String DIALOG_FRAGMENT = "PermissionDialog";
 	private static final String TITLE_KEY = "title";
 	private static final String MESSAGE_KEY = "message";
 
@@ -36,7 +35,7 @@ public class PermissionDialogFragment extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		Logging.logEntrance(DIALOG_FRAGMENT);
+		Logging.logEntrance();
 		int titleId = getArguments().getInt(TITLE_KEY);
 		int messageId = getArguments().getInt(MESSAGE_KEY);
 
@@ -74,7 +73,7 @@ public class PermissionDialogFragment extends DialogFragment {
 				// Logging.logEntrance(DIALOG_FRAGMENT, String.format("keyCode: %d, isBackPressed: %b, KeyEvent: %s", keyCode, keyCode == KeyEvent.KEYCODE_BACK, event));
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
 					if (event.getAction() == KeyEvent.ACTION_UP) {
-						Logging.logEntrance(DIALOG_FRAGMENT, "Back key pressed");
+						Logging.logEntrance("Back key pressed");
 						doNegativeClick();
 						return true;
 					}
@@ -85,19 +84,19 @@ public class PermissionDialogFragment extends DialogFragment {
 	}
 
 	protected void doNegativeClick() {
-		Logging.logEntrance(DIALOG_FRAGMENT);
+		Logging.logEntrance();
 		getActivity().finish();
 	}
 
 	protected void doPositiveClick() {
-		Logging.logEntrance(DIALOG_FRAGMENT);
+		Logging.logEntrance();
 		if (listener != null) {
 			listener.onPositiveClick();
 		}
 	}
 
 	public void setListener(Listener listener) {
-		Logging.logEntrance(DIALOG_FRAGMENT);
+		Logging.logEntrance();
 		this.listener = listener;
 	}
 

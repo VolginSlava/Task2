@@ -30,7 +30,7 @@ public class HomeActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-		Logging.logEntrance(ACTIVITY_SERVICE);
+		Logging.logEntrance();
 
 		if (savedInstanceState == null) {
 			savedInstanceState = new Bundle();
@@ -45,7 +45,7 @@ public class HomeActivity extends ActionBarActivity {
 	}
 
 	private void askForReadContactsPermission() {
-		Logging.logEntrance(ACTIVITY_SERVICE);
+		Logging.logEntrance();
 		PermissionDialogFragment dialog = dialogUtils.getPermissionDialogFragment();
 		dialog.setListener(dialogUtils);
 		if (!dialog.isAdded()) {
@@ -56,7 +56,7 @@ public class HomeActivity extends ActionBarActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		Logging.logEntrance(ACTIVITY_SERVICE);
+		Logging.logEntrance();
 		outState.putBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, readContactsPermissionAcquired);
 	}
 
