@@ -1,4 +1,4 @@
-package com.example.contacts;
+package com.example.contacts.fragments;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -10,6 +10,7 @@ import android.content.DialogInterface.OnKeyListener;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import com.example.contacts.R;
 import com.example.contacts.tools.Logging;
 
 public class PermissionDialogFragment extends DialogFragment {

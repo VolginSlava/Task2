@@ -5,7 +5,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.contacts.PermissionDialogFragment.Listener;
+import com.example.contacts.fragments.ContactsList;
+import com.example.contacts.fragments.PermissionDialogFragment;
+import com.example.contacts.fragments.PermissionDialogFragment.Listener;
 import com.example.contacts.tools.Logging;
 
 public class HomeActivity extends ActionBarActivity {
@@ -73,6 +75,7 @@ public class HomeActivity extends ActionBarActivity {
 
 	private class DialogUtils implements Listener {
 
+		private static final String CONTACTS_LIST_TAG = "contactsList";
 		private static final String DIALOG_UTILS = "DialogUtils";
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 
@@ -89,6 +92,11 @@ public class HomeActivity extends ActionBarActivity {
 		public void onPositiveClick() {
 			Logging.logEntrance(DIALOG_UTILS);
 			readContactsPermissionAcquired = true;
+
+			String[] listItems = new String[] { "q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop" };
+			ContactsList contactsList = ContactsList.newInstance(listItems);
+			
+			getFragmentManager().beginTransaction().add(R.id.fragment, contactsList, CONTACTS_LIST_TAG).commit();
 		}
 
 
