@@ -1,6 +1,9 @@
 package com.example.contacts;
 
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Loader;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -8,6 +11,8 @@ import android.view.MenuItem;
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
 import com.example.contacts.fragments.PermissionDialogFragment.Listener;
+import com.example.contacts.loaders.ContactsLoader;
+import com.example.contacts.loaders.Result;
 import com.example.contacts.tools.Logging;
 
 public class HomeActivity extends ActionBarActivity {
@@ -19,6 +24,7 @@ public class HomeActivity extends ActionBarActivity {
 	private boolean readContactsPermissionAcquired;
 
 	private DialogUtils dialogUtils = new DialogUtils();
+	private LoaderUtils loaderUtils = new LoaderUtils();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,12 +82,11 @@ public class HomeActivity extends ActionBarActivity {
 	private class DialogUtils implements Listener {
 
 		private static final String CONTACTS_LIST_TAG = "contactsList";
-		private static final String DIALOG_UTILS = "DialogUtils";
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 
 
 		private PermissionDialogFragment getPermissionDialogFragment() {
-			Logging.logEntrance(DIALOG_UTILS);
+			Logging.logEntrance();
 			PermissionDialogFragment dialog = (PermissionDialogFragment) getFragmentManager().findFragmentByTag(PERMISSION_DIALOG_FRAGMENT_TAG);
 			if (dialog == null) {
 				dialog = PermissionDialogFragment.newInstance();
@@ -90,65 +95,46 @@ public class HomeActivity extends ActionBarActivity {
 		}
 
 		public void onPositiveClick() {
-			Logging.logEntrance(DIALOG_UTILS);
+			Logging.logEntrance();
 			readContactsPermissionAcquired = true;
 
-			String[] listItems = new String[] { "q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop" };
-			ContactsList contactsList = ContactsList.newInstance(listItems);
-			
-			getFragmentManager().beginTransaction().add(R.id.fragment, contactsList, CONTACTS_LIST_TAG).commit();
+			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
+		}
+	}
+
+	private class LoaderUtils implements LoaderCallbacks<Result> {
+
+		private static final int LOADER_ID = 1;
+
+		public Loader<Result> onCreateLoader(int id, Bundle args) {
+			Logging.logEntrance();
+			switch (id) {
+			case 1:
+				return new ContactsLoader(HomeActivity.this);
+			default:
+				return null;
+			}
 		}
 
+		public void onLoadFinished(Loader<Result> loader, final Result data) {
+			Logging.logEntrance();
 
+			new Handler().post(new Runnable() {
+				
+				public void run() {
+					ContactsList contacts = ContactsList.newInstance(data.lines);
+					
+					getFragmentManager()
+							.beginTransaction()
+							.add(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_TAG)
+							.commit();
+				}
+			});
+		}
 
-
-		// @Deprecated
-		// private PermissionDialogFragment getFragment() {
-		// Logging.logEntrance(ACTIVITY_SERVICE);
-		// PermissionDialogFragment fragment = (PermissionDialogFragment) getFragmentManager().findFragmentByTag(PERMISSION_DIALOG_FRAGMENT_TAG);
-		// if (fragment == null) {
-		// if (permissionDialogFragment == null) {
-		// permissionDialogFragment = PermissionDialogFragment.newInstance();
-		// }
-		// fragment = permissionDialogFragment;
-		// }
-		// return fragment;
-		// }
-
-
-		// private void addPermissionDialog() {
-		// boolean res = getFragmentManager().executePendingTransactions();
-		// Logging.logEntrance(ACTIVITY_SERVICE, "executePendingTransactions: " + res);
-		//
-		// if (!getFragment().isAdded()) {
-		// getFragmentManager().beginTransaction().add(getFragment(), PERMISSION_DIALOG_FRAGMENT_TAG).commit();
-		// }
-		// }
-		//
-		// private void removePermissionDialog() {
-		// boolean res = getFragmentManager().executePendingTransactions();
-		// Logging.logEntrance(ACTIVITY_SERVICE, "executePendingTransactions: " + res);
-		//
-		// if (getFragment().isAdded()) {
-		// getFragmentManager().beginTransaction().remove(getFragment()).commit();
-		// }
-		// }
-
-		// private void addListener() {
-		// Logging.logEntrance(ACTIVITY_SERVICE);
-		// getFragment().setListener(DialogUtils.this);
-		// }
-		//
-		// private void removeListener() {
-		// Logging.logEntrance(ACTIVITY_SERVICE);
-		// getFragment().setListener(null);
-		// }
-
-
-		// @Override
-		// public void onCancel() {
-		// Logging.logEntrance(ACTIVITY_SERVICE);
-		// finish();
-		// }
+		public void onLoaderReset(Loader<Result> loader) {
+			Logging.logEntrance();
+			// TODO Auto-generated method stub
+		}
 	}
 }

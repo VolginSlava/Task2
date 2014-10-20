@@ -4,7 +4,7 @@ import android.util.Log;
 
 public class Logging {
 
-	private static final String DEFAULT_TAG = "log";
+	// private static final String DEFAULT_TAG = "log";
 
 	public static void logEntrance() {
 		logEntrance(getStackTraceElement(), null, null);
@@ -31,6 +31,6 @@ public class Logging {
 		if (extra != null && !extra.isEmpty()) {
 			msg += ". " + extra;
 		}
-		Log.d(tag != null ? tag : DEFAULT_TAG, msg);
+		Log.d(tag != null ? tag : element.getClass().getSimpleName(), msg);
 	}
 }
