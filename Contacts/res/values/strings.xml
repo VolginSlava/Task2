@@ -4,5 +4,13 @@
 	<string name="app_name">Contacts</string>
 	<string name="hello_world">Hello world!</string>
 	<string name="action_settings">Settings</string>
+	
+	
+	<string name="permission_dialog_title">Title!</string>
+	<string name="permission_dialog_message">Хочу читать твои контакты!!!</string>
+	
+	<string name="permission_dialog_button_ok">OK</string>
+	<string name="permission_dialog_button_cancel">Cancel</string>
+	
 
 </resources>
