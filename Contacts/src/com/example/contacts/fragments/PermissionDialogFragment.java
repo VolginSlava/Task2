@@ -95,7 +95,7 @@ public class PermissionDialogFragment extends DialogFragment {
 		}
 	}
 
-	public void setListener(Listener listener) {
+	public void setPermissionAcquiredListener(Listener listener) {
 		Logging.logEntrance();
 		this.listener = listener;
 	}

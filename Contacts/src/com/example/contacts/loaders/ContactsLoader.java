@@ -15,6 +15,12 @@ public class ContactsLoader extends DefaultLoader<Result> {
 	@Override
 	public Result loadInBackground() {
 		Logging.logEntrance();
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		String[] listItems = new String[] { "q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop" };
 		return Result.finished(listItems);
 	}

@@ -19,12 +19,16 @@ public class HomeActivity extends ActionBarActivity {
 
 	private static final String READ_CONTACTS_PERMISSION_ACQUIRED_KEY = "readContactsPermissionAcquired";
 	private static final boolean READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE = false;
+	private static final String CONTACTS_LOADED_KEY = "contactsLoaded";
+	private static final boolean CONTACTS_LOADED_DEFAULT_VALUE = false;
 
 
 	private boolean readContactsPermissionAcquired;
+	private boolean contactsLoaded;
 
 	private DialogUtils dialogUtils = new DialogUtils();
 	private LoaderUtils loaderUtils = new LoaderUtils();
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,17 +41,20 @@ public class HomeActivity extends ActionBarActivity {
 		}
 
 		readContactsPermissionAcquired = savedInstanceState.getBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE);
+		contactsLoaded = savedInstanceState.getBoolean(CONTACTS_LOADED_KEY, CONTACTS_LOADED_DEFAULT_VALUE);
 
 		if (!readContactsPermissionAcquired) {
 			askForReadContactsPermission();
 		}
-
+		if (readContactsPermissionAcquired && !contactsLoaded) {
+			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
+		}
 	}
 
 	private void askForReadContactsPermission() {
 		Logging.logEntrance();
 		PermissionDialogFragment dialog = dialogUtils.getPermissionDialogFragment();
-		dialog.setListener(dialogUtils);
+		dialog.setPermissionAcquiredListener(dialogUtils);
 		if (!dialog.isAdded()) {
 			dialog.show(getFragmentManager(), DialogUtils.PERMISSION_DIALOG_FRAGMENT_TAG);
 		}
@@ -58,6 +65,7 @@ public class HomeActivity extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 		Logging.logEntrance();
 		outState.putBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, readContactsPermissionAcquired);
+		outState.putBoolean(CONTACTS_LOADED_KEY, contactsLoaded);
 	}
 
 	@Override
@@ -81,6 +89,7 @@ public class HomeActivity extends ActionBarActivity {
 
 	private class DialogUtils implements Listener {
 
+		private static final String PROGRESS_DIALOG_TAG = "progressDialog";
 		private static final String CONTACTS_LIST_TAG = "contactsList";
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 
@@ -97,6 +106,13 @@ public class HomeActivity extends ActionBarActivity {
 		public void onPositiveClick() {
 			Logging.logEntrance();
 			readContactsPermissionAcquired = true;
+
+			ProgressDialogFragment dialog = ProgressDialogFragment.newInstance();
+			getFragmentManager()
+					.beginTransaction()
+					.add(R.id.fragment, dialog, PROGRESS_DIALOG_TAG)
+					.commit();
+			getFragmentManager().executePendingTransactions();
 
 			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
 		}
@@ -123,10 +139,11 @@ public class HomeActivity extends ActionBarActivity {
 				
 				public void run() {
 					ContactsList contacts = ContactsList.newInstance(data.lines);
+					contactsLoaded = true;
 					
 					getFragmentManager()
 							.beginTransaction()
-							.add(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_TAG)
+							.replace(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_TAG)
 							.commit();
 				}
 			});
