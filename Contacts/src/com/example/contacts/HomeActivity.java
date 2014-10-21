@@ -14,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
+import java.util.List;
+
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.NoContactsFragment;
 import com.example.contacts.fragments.PermissionDialogFragment;
@@ -30,11 +32,14 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 	private static final String CONTACTS_LOADED_KEY = "contactsLoaded";
 	private static final boolean CONTACTS_LOADED_DEFAULT_VALUE = false;
 
+	private static final String CONTACTS_EMPTY_KEY = "contactsEmpty";
+	private static final boolean CONTACTS_EMPTY_DEFAULT_VALUE = true;
 
 	private boolean readContactsPermissionAcquired;
 	private boolean contactsLoaded;
+	private boolean contactsEmpty;
 
-	private FragmentUtils dialogUtils = new FragmentUtils();
+	private FragmentUtils fragmentUtils = new FragmentUtils();
 	private LoaderUtils loaderUtils = new LoaderUtils();
 
 
@@ -50,6 +55,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 
 		readContactsPermissionAcquired = savedInstanceState.getBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE);
 		contactsLoaded = savedInstanceState.getBoolean(CONTACTS_LOADED_KEY, CONTACTS_LOADED_DEFAULT_VALUE);
+		contactsEmpty = savedInstanceState.getBoolean(CONTACTS_EMPTY_KEY, CONTACTS_EMPTY_DEFAULT_VALUE);
 
 		if (!readContactsPermissionAcquired) {
 			askForReadContactsPermission();
@@ -57,12 +63,16 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		if (readContactsPermissionAcquired && !contactsLoaded) {
 			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
 		}
+		
+		if (contactsLoaded && !contactsEmpty) {
+			fragmentUtils.setOnContactsListItemClickListener(this);
+		}
 	}
 
 	private void askForReadContactsPermission() {
 		Logging.logEntrance();
-		PermissionDialogFragment dialog = dialogUtils.getPermissionDialogFragment();
-		dialog.setPermissionAcquiredListener(dialogUtils);
+		PermissionDialogFragment dialog = fragmentUtils.getPermissionDialogFragment();
+		dialog.setPermissionAcquiredListener(fragmentUtils);
 		if (!dialog.isAdded()) {
 			dialog.show(getFragmentManager(), FragmentUtils.PERMISSION_DIALOG_FRAGMENT_TAG);
 		}
@@ -72,15 +82,16 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Logging.logEntrance();
+
 		outState.putBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, readContactsPermissionAcquired);
 		outState.putBoolean(CONTACTS_LOADED_KEY, contactsLoaded);
+		outState.putBoolean(CONTACTS_EMPTY_KEY, contactsEmpty);
 	}
 
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		ContactData data = (ContactData) parent.getItemAtPosition(position);
 		Logging.logEntrance(data.toString());
 		
-
 		Intent emailIntent = getEmailIntent(data);
 		if (emailIntent != null) {
 			startActivity(Intent.createChooser(emailIntent, ""));
@@ -114,9 +125,8 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 		private static final String PROGRESS_DIALOG_FRAGMENT_TAG = "progressDialog";
 		private static final String CONTACTS_LIST_FRAGMENT_TAG = "contactsList";
-
-
 		private static final String NO_CONTACTS_FRAGMENT_TAG = "noContactsFragment";
+
 
 		private PermissionDialogFragment getPermissionDialogFragment() {
 			Logging.logEntrance();
@@ -148,13 +158,20 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 
 			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
 		}
+
+		private void setOnContactsListItemClickListener(OnItemClickListener listener) {
+			ContactsList contactsList = (ContactsList) getFragmentManager().findFragmentByTag(FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG);
+			if (contactsList != null) {
+				contactsList.setOnItemClickListener(listener);
+			}
+		}
 	}
 
-	private class LoaderUtils implements LoaderCallbacks<Result> {
+	private class LoaderUtils implements LoaderCallbacks<Result<List<ContactData>>> {
 
 		private static final int LOADER_ID = 1;
 
-		public Loader<Result> onCreateLoader(int id, Bundle args) {
+		public Loader<Result<List<ContactData>>> onCreateLoader(int id, Bundle args) {
 			Logging.logEntrance();
 			switch (id) {
 			case 1:
@@ -164,19 +181,20 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			}
 		}
 
-		public void onLoadFinished(Loader<Result> loader, final Result data) {
+		public void onLoadFinished(Loader<Result<List<ContactData>>> loader, final Result<List<ContactData>> result) {
 			Logging.logEntrance();
 
 			new Handler().post(new Runnable() {
 				
 				public void run() {
 					contactsLoaded = true;
+					contactsEmpty = isContactsEmpty(result);
 
 					Fragment fragment;
 					String fragmentTag;
 					
-					if (!isContactsEmpty(data)) {
-						fragment = ContactsList.newInstance(HomeActivity.this, data.lines);
+					if (!contactsEmpty) {
+						fragment = ContactsList.newInstance(HomeActivity.this, result.data);
 						fragmentTag = FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG;
 					} else {
 						fragment = NoContactsFragment.newInstance();
@@ -191,13 +209,13 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			});
 		}
 
-		public void onLoaderReset(Loader<Result> loader) {
+		public void onLoaderReset(Loader<Result<List<ContactData>>> loader) {
 			Logging.logEntrance();
 			// TODO Auto-generated method stub
 		}
 
-		private boolean isContactsEmpty(Result data) {
-			return data == null || data.lines == null || data.lines.length == 0;
+		private boolean isContactsEmpty(Result<List<ContactData>> data) {
+			return data == null || data.data == null || data.data.size() == 0;
 		}
 	}
 

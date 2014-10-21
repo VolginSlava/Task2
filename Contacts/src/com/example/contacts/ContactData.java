@@ -2,29 +2,32 @@ package com.example.contacts;
 
 import android.media.Image;
 
+import java.io.Serializable;
+
 import com.example.contacts.tools.Logging;
 
-public class ContactData {
+public class ContactData implements Serializable {
+	private static final long serialVersionUID = -5158009157779590079L;
 
-	private Image photo;
+	// private Image photo;
 	private String name;
 	private String email;
 
 	public ContactData(Image photo, String name, String email) {
-		this.photo = photo;
+		// this.photo = photo;
 		this.name = name;
 		this.email = email;
 
 		Logging.logEntrance(this.toString());
 	}
 
-	public Image getPhoto() {
-		return photo;
-	}
-
-	public void setPhoto(Image photo) {
-		this.photo = photo;
-	}
+	// public Image getPhoto() {
+	// return photo;
+	// }
+	//
+	// public void setPhoto(Image photo) {
+	// this.photo = photo;
+	// }
 
 	public String getName() {
 		return name;
