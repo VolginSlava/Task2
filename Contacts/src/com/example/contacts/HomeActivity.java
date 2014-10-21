@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
@@ -77,14 +78,23 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		ContactData data = (ContactData) parent.getItemAtPosition(position);
 		Logging.logEntrance(data.toString());
 		
+
 		Intent emailIntent = getEmailIntent(data);
-		startActivity(Intent.createChooser(emailIntent, ""));
+		if (emailIntent != null) {
+			startActivity(Intent.createChooser(emailIntent, ""));
+		} else {
+			String msg = String.format(getString(R.string.no_email_format), data.getName());
+			Toast.makeText(HomeActivity.this, msg, Toast.LENGTH_SHORT).show();
+		}
 	}
 
 	private Intent getEmailIntent(ContactData data) {
 		Logging.logEntrance();
+		if (data == null || data.getEmail() == null) {
+			return null;
+		}
 
-		String subject = String.format("Hi %s!", data.getName());
+		String subject = String.format("Hi, %s!", data.getName());
 		String text = String.format("Sent from new Contacts App to your e-mail (%s).", data.getEmail());
 
 		Intent intent = new Intent(Intent.ACTION_SEND);

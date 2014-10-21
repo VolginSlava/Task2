@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import com.example.contacts.ContactData;
 import com.example.contacts.ContactsArrayAdapter;
@@ -73,8 +74,9 @@ public class ContactsList extends Fragment {
 		Logging.logEntrance();
 
 		List<ContactData> ar = new ArrayList<ContactData>();
+		Random r = new Random();
 		for (String s : args) {
-			ContactData m = new ContactData(null, s, s.toUpperCase(Locale.US));
+			ContactData m = new ContactData(null, s, r.nextBoolean() ? s.toUpperCase(Locale.US) : null);
 			ar.add(m);
 		}
 		return new ContactsArrayAdapter(getActivity(), ar);
