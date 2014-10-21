@@ -2,21 +2,24 @@ package com.example.contacts.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
+import com.example.contacts.ContactData;
+import com.example.contacts.ContactsArrayAdapter;
 import com.example.contacts.R;
 import com.example.contacts.tools.Logging;
 
 public class ContactsList extends Fragment {
 
-	private static final String CONTACTS_LIST = "ContactsList";
 	private static final String LIST_ITEMS_KEY = "listItems";
 
 	public static ContactsList newInstance(String[] listItems) {
@@ -43,8 +46,8 @@ public class ContactsList extends Fragment {
 			savedInstanceState = new Bundle();
 		}
 
-		Log.i(CONTACTS_LIST, "Saved contacts: " + Arrays.deepToString(savedInstanceState.getStringArray(LIST_ITEMS_KEY)));
-		Log.i(CONTACTS_LIST, "Initial contacts: " + Arrays.deepToString(getArguments().getStringArray(LIST_ITEMS_KEY)));
+		Logging.logEntrance("Saved contacts: " + Arrays.deepToString(savedInstanceState.getStringArray(LIST_ITEMS_KEY)));
+		Logging.logEntrance("Initial contacts: " + Arrays.deepToString(getArguments().getStringArray(LIST_ITEMS_KEY)));
 
 		listItems = savedInstanceState.getStringArray(LIST_ITEMS_KEY);
 		if (listItems == null) {
@@ -61,9 +64,15 @@ public class ContactsList extends Fragment {
 		this.listItems = listItems;
 	}
 
-	private ArrayAdapter<String> getAdapter(String[] args) {
+	private ArrayAdapter<ContactData> getAdapter(String[] args) {
 		Logging.logEntrance();
-		return args != null ? new ArrayAdapter<String>(getActivity(), R.layout.contacts_list_item, args) : null;
+
+		List<ContactData> ar = new ArrayList<ContactData>();
+		for (String s : args) {
+			ContactData m = new ContactData(null, s, s.toUpperCase(Locale.US));
+			ar.add(m);
+		}
+		return new ContactsArrayAdapter(getActivity(), ar);
 	}
 
 	@Override

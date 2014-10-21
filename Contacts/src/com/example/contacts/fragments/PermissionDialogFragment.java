@@ -19,6 +19,7 @@ public class PermissionDialogFragment extends DialogFragment {
 	private static final String MESSAGE_KEY = "message";
 
 	public static PermissionDialogFragment newInstance() {
+		Logging.logEntrance();
 		PermissionDialogFragment fragment = new PermissionDialogFragment();
 
 		Bundle args = new Bundle();
@@ -70,7 +71,6 @@ public class PermissionDialogFragment extends DialogFragment {
 	private OnKeyListener getBackKeyListener() {
 		return new DialogInterface.OnKeyListener() {
 			public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-				// Logging.logEntrance(DIALOG_FRAGMENT, String.format("keyCode: %d, isBackPressed: %b, KeyEvent: %s", keyCode, keyCode == KeyEvent.KEYCODE_BACK, event));
 				if (keyCode == KeyEvent.KEYCODE_BACK) {
 					if (event.getAction() == KeyEvent.ACTION_UP) {
 						Logging.logEntrance("Back key pressed");

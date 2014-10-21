@@ -14,5 +14,11 @@
 	
 	<string name="progress_dialog_text">Message!!!</string>
 	
+	<string name="contacts_list_item_image_description">photo</string>
+	
+	<string name="contacts_list_item_name_default">Name</string>
+	
+	<string name="contacts_list_item_email_dafault">email</string>
+	
 
 </resources>

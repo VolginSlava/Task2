@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
+import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.fragments.PermissionDialogFragment.PositiveClickListener;
 import com.example.contacts.loaders.ContactsLoader;
 import com.example.contacts.loaders.Result;

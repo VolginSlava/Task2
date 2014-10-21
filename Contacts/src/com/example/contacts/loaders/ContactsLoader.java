@@ -21,7 +21,8 @@ public class ContactsLoader extends DefaultLoader<Result> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String[] listItems = new String[] { "q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop" };
+		String[] listItems = new String[] { "q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop",
+											"q", "qw", "qwe", "qwer", "qwert", "qwerty", "qwertyu", "qwertyui", "qwertyuio", "qwertyuiop" };
 		return Result.finished(listItems);
 	}
 
@@ -29,6 +30,5 @@ public class ContactsLoader extends DefaultLoader<Result> {
 	protected void releaseResources(Result data) {
 		Logging.logEntrance();
 		// TODO Auto-generated method stub
-
 	}
 }
