@@ -1,6 +1,7 @@
 package com.example.contacts;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,7 +14,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
-import com.example.contacts.fragments.PermissionDialogFragment.PositiveClickListener;
 import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.loaders.ContactsLoader;
 import com.example.contacts.loaders.Result;
@@ -23,6 +23,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 
 	private static final String READ_CONTACTS_PERMISSION_ACQUIRED_KEY = "readContactsPermissionAcquired";
 	private static final boolean READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE = false;
+
 	private static final String CONTACTS_LOADED_KEY = "contactsLoaded";
 	private static final boolean CONTACTS_LOADED_DEFAULT_VALUE = false;
 
@@ -72,32 +73,31 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		outState.putBoolean(CONTACTS_LOADED_KEY, contactsLoaded);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.home, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
-
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		// TODO Auto-generated method stub
-		Logging.logEntrance(view.toString());
-
+		ContactData data = (ContactData) parent.getItemAtPosition(position);
+		Logging.logEntrance(data.toString());
+		
+		Intent emailIntent = getEmailIntent(data);
+		startActivity(Intent.createChooser(emailIntent, ""));
 	}
 
-	private class DialogUtils implements PositiveClickListener {
+	private Intent getEmailIntent(ContactData data) {
+		Logging.logEntrance();
+
+		String subject = String.format("Hi %s!", data.getName());
+		String text = String.format("Sent from new Contacts App to your e-mail (%s).", data.getEmail());
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("plain/text");
+
+		intent.putExtra(Intent.EXTRA_EMAIL, new String[] { data.getEmail() });
+		intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+		intent.putExtra(Intent.EXTRA_TEXT, text);
+
+		return intent;
+	}
+
+	private class DialogUtils implements PermissionDialogFragment.PositiveClickListener {
 
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 		private static final String PROGRESS_DIALOG_FRAGMENT_TAG = "progressDialog";
@@ -171,5 +171,27 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			Logging.logEntrance();
 			// TODO Auto-generated method stub
 		}
+	}
+
+
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.home, menu);
+		return true;
+	}
+
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }
