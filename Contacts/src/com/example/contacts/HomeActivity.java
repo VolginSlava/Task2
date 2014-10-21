@@ -1,5 +1,6 @@
 package com.example.contacts;
 
+import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
@@ -14,6 +15,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
 import com.example.contacts.fragments.ContactsList;
+import com.example.contacts.fragments.NoContactsFragment;
 import com.example.contacts.fragments.PermissionDialogFragment;
 import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.loaders.ContactsLoader;
@@ -32,7 +34,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 	private boolean readContactsPermissionAcquired;
 	private boolean contactsLoaded;
 
-	private DialogUtils dialogUtils = new DialogUtils();
+	private FragmentUtils dialogUtils = new FragmentUtils();
 	private LoaderUtils loaderUtils = new LoaderUtils();
 
 
@@ -62,7 +64,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		PermissionDialogFragment dialog = dialogUtils.getPermissionDialogFragment();
 		dialog.setPermissionAcquiredListener(dialogUtils);
 		if (!dialog.isAdded()) {
-			dialog.show(getFragmentManager(), DialogUtils.PERMISSION_DIALOG_FRAGMENT_TAG);
+			dialog.show(getFragmentManager(), FragmentUtils.PERMISSION_DIALOG_FRAGMENT_TAG);
 		}
 	}
 
@@ -107,12 +109,14 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		return intent;
 	}
 
-	private class DialogUtils implements PermissionDialogFragment.PositiveClickListener {
+	private class FragmentUtils implements PermissionDialogFragment.PositiveClickListener {
 
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
 		private static final String PROGRESS_DIALOG_FRAGMENT_TAG = "progressDialog";
 		private static final String CONTACTS_LIST_FRAGMENT_TAG = "contactsList";
 
+
+		private static final String NO_CONTACTS_FRAGMENT_TAG = "noContactsFragment";
 
 		private PermissionDialogFragment getPermissionDialogFragment() {
 			Logging.logEntrance();
@@ -166,12 +170,22 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			new Handler().post(new Runnable() {
 				
 				public void run() {
-					ContactsList contacts = ContactsList.newInstance(HomeActivity.this, data.lines);
 					contactsLoaded = true;
+
+					Fragment fragment;
+					String fragmentTag;
+					
+					if (!isContactsEmpty(data)) {
+						fragment = ContactsList.newInstance(HomeActivity.this, data.lines);
+						fragmentTag = FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG;
+					} else {
+						fragment = NoContactsFragment.newInstance();
+						fragmentTag = FragmentUtils.NO_CONTACTS_FRAGMENT_TAG;
+					}
 					
 					getFragmentManager()
 							.beginTransaction()
-							.replace(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_FRAGMENT_TAG)
+							.replace(R.id.fragment, fragment, fragmentTag)
 							.commit();
 				}
 			});
@@ -181,9 +195,11 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			Logging.logEntrance();
 			// TODO Auto-generated method stub
 		}
+
+		private boolean isContactsEmpty(Result data) {
+			return data == null || data.lines == null || data.lines.length == 0;
+		}
 	}
-
-
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
-	android:layout_height="wrap_content" >
+	android:layout_height="wrap_content"
+	android:padding="4pt"
+	 >
 
 	<ImageView
 		android:id="@+id/contacts_list_item_image"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:paddingRight="10pt"
+		
 		android:minHeight="60dp"
+		android:maxHeight="60dp"
+		
 		android:minWidth="60dp"
+		android:maxWidth="60dp"
 		
 		android:src="@drawable/ic_launcher"
 		android:contentDescription="@string/contacts_list_item_image_description" />
@@ -19,7 +26,8 @@
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:minHeight="30sp"
+		android:padding="2pt"
+		android:textSize="20sp"
 		android:text="@string/contacts_list_item_name_default" />
 
 	<TextView
@@ -29,7 +37,8 @@
 		android:layout_below="@id/contacts_list_item_contact_name"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:minHeight="30sp"
+		android:padding="2pt"
+		android:textSize="12sp"
 		android:text="@string/contacts_list_item_email_dafault" />
 
 </RelativeLayout>

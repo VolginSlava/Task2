@@ -5,6 +5,7 @@ import android.media.Image;
 import com.example.contacts.tools.Logging;
 
 public class ContactData {
+
 	private Image photo;
 	private String name;
 	private String email;
