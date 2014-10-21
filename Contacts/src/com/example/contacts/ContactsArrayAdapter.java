@@ -15,9 +15,9 @@ import com.example.contacts.tools.Logging;
 
 public class ContactsArrayAdapter extends ArrayAdapter<ContactData> {
 
+	private SparseArray<View> itemsViews = new SparseArray<View>();
 	private Activity context;
 	private List<ContactData> items;
-	private SparseArray<View> itemsViews = new SparseArray<View>();
 
 	public ContactsArrayAdapter(Activity context, List<ContactData> items) {
 		super(context, R.layout.contacts_list_item, items);

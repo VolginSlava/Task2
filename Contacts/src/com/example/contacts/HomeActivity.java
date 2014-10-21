@@ -7,16 +7,19 @@ import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
-import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.fragments.PermissionDialogFragment.PositiveClickListener;
+import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.loaders.ContactsLoader;
 import com.example.contacts.loaders.Result;
 import com.example.contacts.tools.Logging;
 
-public class HomeActivity extends ActionBarActivity {
+public class HomeActivity extends ActionBarActivity implements OnItemClickListener {
 
 	private static final String READ_CONTACTS_PERMISSION_ACQUIRED_KEY = "readContactsPermissionAcquired";
 	private static final boolean READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE = false;
@@ -88,6 +91,12 @@ public class HomeActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		// TODO Auto-generated method stub
+		Logging.logEntrance(view.toString());
+
+	}
+
 	private class DialogUtils implements PositiveClickListener {
 
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
@@ -147,7 +156,7 @@ public class HomeActivity extends ActionBarActivity {
 			new Handler().post(new Runnable() {
 				
 				public void run() {
-					ContactsList contacts = ContactsList.newInstance(data.lines);
+					ContactsList contacts = ContactsList.newInstance(HomeActivity.this, data.lines);
 					contactsLoaded = true;
 					
 					getFragmentManager()

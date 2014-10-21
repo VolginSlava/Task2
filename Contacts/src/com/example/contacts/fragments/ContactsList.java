@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -22,10 +23,11 @@ public class ContactsList extends Fragment {
 
 	private static final String LIST_ITEMS_KEY = "listItems";
 
-	public static ContactsList newInstance(String[] listItems) {
+	public static ContactsList newInstance(OnItemClickListener onItemClickListener, String[] listItems) {
 		Logging.logEntrance();
 
 		ContactsList list = new ContactsList();
+		list.setOnItemClickListener(onItemClickListener);
 
 		Bundle args = new Bundle();
 		args.putStringArray(ContactsList.LIST_ITEMS_KEY, listItems);
@@ -36,11 +38,14 @@ public class ContactsList extends Fragment {
 
 	private ListView listView;
 	private String[] listItems;
+	private OnItemClickListener listener;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Logging.logEntrance();
 		listView = (ListView) inflater.inflate(R.layout.contacts_list, container, false);
+		
+		listView.setOnItemClickListener(listener);
 
 		if (savedInstanceState == null) {
 			savedInstanceState = new Bundle();
@@ -82,4 +87,11 @@ public class ContactsList extends Fragment {
 		
 		outState.putStringArray(LIST_ITEMS_KEY, listItems);
 	}
+
+	
+
+	public void setOnItemClickListener(OnItemClickListener listener) {
+		this.listener = listener;
+	}
+
 }
