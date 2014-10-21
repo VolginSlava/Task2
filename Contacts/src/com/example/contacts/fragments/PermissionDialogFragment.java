@@ -30,7 +30,7 @@ public class PermissionDialogFragment extends DialogFragment {
 	}
 
 
-	private Listener listener;
+	private PositiveClickListener listener;
 
 
 	@Override
@@ -95,12 +95,12 @@ public class PermissionDialogFragment extends DialogFragment {
 		}
 	}
 
-	public void setPermissionAcquiredListener(Listener listener) {
+	public void setPermissionAcquiredListener(PositiveClickListener listener) {
 		Logging.logEntrance();
 		this.listener = listener;
 	}
 
-	public static interface Listener {
+	public static interface PositiveClickListener {
 		void onPositiveClick();
 	}
 }

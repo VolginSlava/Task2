@@ -12,5 +12,7 @@
 	<string name="permission_dialog_button_ok">OK</string>
 	<string name="permission_dialog_button_cancel">Cancel</string>
 	
+	<string name="progress_dialog_text">Message!!!</string>
+	
 
 </resources>

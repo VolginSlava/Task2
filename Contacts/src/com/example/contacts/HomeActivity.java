@@ -10,7 +10,7 @@ import android.view.MenuItem;
 
 import com.example.contacts.fragments.ContactsList;
 import com.example.contacts.fragments.PermissionDialogFragment;
-import com.example.contacts.fragments.PermissionDialogFragment.Listener;
+import com.example.contacts.fragments.PermissionDialogFragment.PositiveClickListener;
 import com.example.contacts.loaders.ContactsLoader;
 import com.example.contacts.loaders.Result;
 import com.example.contacts.tools.Logging;
@@ -87,11 +87,11 @@ public class HomeActivity extends ActionBarActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	private class DialogUtils implements Listener {
+	private class DialogUtils implements PositiveClickListener {
 
-		private static final String PROGRESS_DIALOG_TAG = "progressDialog";
-		private static final String CONTACTS_LIST_TAG = "contactsList";
 		private static final String PERMISSION_DIALOG_FRAGMENT_TAG = "permissionDialogFragment";
+		private static final String PROGRESS_DIALOG_FRAGMENT_TAG = "progressDialog";
+		private static final String CONTACTS_LIST_FRAGMENT_TAG = "contactsList";
 
 
 		private PermissionDialogFragment getPermissionDialogFragment() {
@@ -103,14 +103,22 @@ public class HomeActivity extends ActionBarActivity {
 			return dialog;
 		}
 
+		private ProgressDialogFragment getProgressDialogFragment() {
+			Logging.logEntrance();
+			ProgressDialogFragment dialog = (ProgressDialogFragment) getFragmentManager().findFragmentByTag(PROGRESS_DIALOG_FRAGMENT_TAG);
+			if (dialog == null) {
+				dialog = ProgressDialogFragment.newInstance();
+			}
+			return dialog;
+		}
+
 		public void onPositiveClick() {
 			Logging.logEntrance();
 			readContactsPermissionAcquired = true;
 
-			ProgressDialogFragment dialog = ProgressDialogFragment.newInstance();
 			getFragmentManager()
 					.beginTransaction()
-					.add(R.id.fragment, dialog, PROGRESS_DIALOG_TAG)
+					.add(R.id.fragment, getProgressDialogFragment(), PROGRESS_DIALOG_FRAGMENT_TAG)
 					.commit();
 			getFragmentManager().executePendingTransactions();
 
@@ -143,7 +151,7 @@ public class HomeActivity extends ActionBarActivity {
 					
 					getFragmentManager()
 							.beginTransaction()
-							.replace(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_TAG)
+							.replace(R.id.fragment, contacts, DialogUtils.CONTACTS_LIST_FRAGMENT_TAG)
 							.commit();
 				}
 			});
