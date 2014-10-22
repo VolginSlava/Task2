@@ -22,7 +22,9 @@ import com.example.contacts.fragments.PermissionDialogFragment;
 import com.example.contacts.fragments.ProgressDialogFragment;
 import com.example.contacts.loaders.ContactsLoader;
 import com.example.contacts.loaders.Result;
+import com.example.contacts.testpackage.TestClass;
 import com.example.contacts.tools.Logging;
+
 
 public class HomeActivity extends ActionBarActivity implements OnItemClickListener {
 
@@ -48,6 +50,10 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		if (activityState.contactsLoaded && !activityState.contactsEmpty) {
 			fragmentUtils.setOnContactsListItemClickListener(this);
 		}
+
+		
+		new TestClass(this); // TODO
+		
 	}
 
 	private void askForReadContactsPermission() {
@@ -184,6 +190,8 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 	private class LoaderUtils implements LoaderCallbacks<Result<List<ContactData>>> {
 
 		private static final int LOADER_ID = 1;
+		private static final int EMAIL_LIADER_ID = 2;
+		private static final int CONTACTS_LIADER_ID = 3;
 
 		public Loader<Result<List<ContactData>>> onCreateLoader(int id, Bundle args) {
 			Logging.logEntrance();
@@ -252,4 +260,5 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 }
