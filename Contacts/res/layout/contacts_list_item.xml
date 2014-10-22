@@ -37,7 +37,11 @@
 		android:layout_below="@id/contacts_list_item_contact_name"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:padding="2pt"
+		android:paddingLeft="12pt"
+		android:paddingRight="2pt"
+		android:paddingTop="2pt"
+		android:paddingBottom="2pt"
+		
 		android:textSize="12sp"
 		android:text="@string/contacts_list_item_email_dafault" />
 

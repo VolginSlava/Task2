@@ -19,6 +19,6 @@ public class ProgressDialogFragment extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Logging.logEntrance();
-		return inflater.inflate(R.layout.progress_dialog_fragment, container, false);
+		return inflater.inflate(R.layout.contacts_loading_progress, container, false);
 	}
 }
