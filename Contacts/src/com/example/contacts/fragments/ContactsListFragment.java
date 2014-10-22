@@ -10,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 import com.example.contacts.ContactData;
@@ -18,18 +17,18 @@ import com.example.contacts.ContactsArrayAdapter;
 import com.example.contacts.R;
 import com.example.contacts.tools.Logging;
 
-public class ContactsList extends Fragment {
+public class ContactsListFragment extends Fragment {
 
 	private static final String LIST_ITEMS_KEY = "listItems";
 
-	public static ContactsList newInstance(OnItemClickListener onItemClickListener, List<ContactData> data) {
+	public static ContactsListFragment newInstance(OnItemClickListener onItemClickListener, List<ContactData> data) {
 		Logging.logEntrance();
 
-		ContactsList list = new ContactsList();
+		ContactsListFragment list = new ContactsListFragment();
 		list.setOnItemClickListener(onItemClickListener);
 
 		Bundle args = new Bundle();
-		args.putSerializable(ContactsList.LIST_ITEMS_KEY, (Serializable) data);
+		args.putSerializable(ContactsListFragment.LIST_ITEMS_KEY, (Serializable) data);
 		list.setArguments(args);
 
 		return list;
@@ -51,8 +50,8 @@ public class ContactsList extends Fragment {
 			savedInstanceState = new Bundle();
 		}
 
-		Logging.logEntrance("Saved contacts: " + Arrays.deepToString(savedInstanceState.getStringArray(LIST_ITEMS_KEY)));
-		Logging.logEntrance("Initial contacts: " + Arrays.deepToString(getArguments().getStringArray(LIST_ITEMS_KEY)));
+		Logging.logEntrance("Saved contacts: " + savedInstanceState.getSerializable(LIST_ITEMS_KEY));
+		Logging.logEntrance("Initial contacts: " + getArguments().getSerializable(LIST_ITEMS_KEY));
 
 		listItems = (List<ContactData>) savedInstanceState.getSerializable(LIST_ITEMS_KEY);
 		if (listItems == null) {

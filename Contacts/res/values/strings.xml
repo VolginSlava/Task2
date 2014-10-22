@@ -23,4 +23,7 @@
 	<string name="no_contacts_image_description">No contacts</string>
 	<string name="no_contacts_text">No contacts!</string>
 	
+	<string name="email_letter_subject_template">Hi, %s!</string>
+	<string name="email_letter_text_template">Sent from new Contacts App to your e-mail (%s).</string>
+	
 </resources>

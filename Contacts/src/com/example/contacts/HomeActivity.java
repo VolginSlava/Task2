@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import com.example.contacts.fragments.ContactsList;
+import com.example.contacts.fragments.ContactsListFragment;
 import com.example.contacts.fragments.NoContactsFragment;
 import com.example.contacts.fragments.PermissionDialogFragment;
 import com.example.contacts.fragments.ProgressDialogFragment;
@@ -26,19 +26,7 @@ import com.example.contacts.tools.Logging;
 
 public class HomeActivity extends ActionBarActivity implements OnItemClickListener {
 
-	private static final String READ_CONTACTS_PERMISSION_ACQUIRED_KEY = "readContactsPermissionAcquired";
-	private static final boolean READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE = false;
-
-	private static final String CONTACTS_LOADED_KEY = "contactsLoaded";
-	private static final boolean CONTACTS_LOADED_DEFAULT_VALUE = false;
-
-	private static final String CONTACTS_EMPTY_KEY = "contactsEmpty";
-	private static final boolean CONTACTS_EMPTY_DEFAULT_VALUE = true;
-
-	private boolean readContactsPermissionAcquired;
-	private boolean contactsLoaded;
-	private boolean contactsEmpty;
-
+	private ActivityState activityState = new ActivityState();
 	private FragmentUtils fragmentUtils = new FragmentUtils();
 	private LoaderUtils loaderUtils = new LoaderUtils();
 
@@ -49,22 +37,15 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		setContentView(R.layout.activity_home);
 		Logging.logEntrance();
 
-		if (savedInstanceState == null) {
-			savedInstanceState = new Bundle();
-		}
+		activityState.restoreInstanceState(savedInstanceState);
 
-		readContactsPermissionAcquired = savedInstanceState.getBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE);
-		contactsLoaded = savedInstanceState.getBoolean(CONTACTS_LOADED_KEY, CONTACTS_LOADED_DEFAULT_VALUE);
-		contactsEmpty = savedInstanceState.getBoolean(CONTACTS_EMPTY_KEY, CONTACTS_EMPTY_DEFAULT_VALUE);
-
-		if (!readContactsPermissionAcquired) {
+		if (!activityState.readContactsPermissionAcquired) {
 			askForReadContactsPermission();
 		}
-		if (readContactsPermissionAcquired && !contactsLoaded) {
+		if (activityState.readContactsPermissionAcquired && !activityState.contactsLoaded) {
 			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
 		}
-		
-		if (contactsLoaded && !contactsEmpty) {
+		if (activityState.contactsLoaded && !activityState.contactsEmpty) {
 			fragmentUtils.setOnContactsListItemClickListener(this);
 		}
 	}
@@ -82,10 +63,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		Logging.logEntrance();
-
-		outState.putBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, readContactsPermissionAcquired);
-		outState.putBoolean(CONTACTS_LOADED_KEY, contactsLoaded);
-		outState.putBoolean(CONTACTS_EMPTY_KEY, contactsEmpty);
+		activityState.saveInstanceState(outState);
 	}
 
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -107,8 +85,8 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			return null;
 		}
 
-		String subject = String.format("Hi, %s!", data.getName());
-		String text = String.format("Sent from new Contacts App to your e-mail (%s).", data.getEmail());
+		String subject = String.format(getString(R.string.email_letter_subject_template), data.getName());
+		String text = String.format(getString(R.string.email_letter_text_template), data.getEmail());
 
 		Intent intent = new Intent(Intent.ACTION_SEND);
 		intent.setType("plain/text");
@@ -118,6 +96,42 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		intent.putExtra(Intent.EXTRA_TEXT, text);
 
 		return intent;
+	}
+
+	private class ActivityState {
+		private static final String READ_CONTACTS_PERMISSION_ACQUIRED_KEY = "readContactsPermissionAcquired";
+		private static final boolean READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE = false;
+
+		private static final String CONTACTS_LOADED_KEY = "contactsLoaded";
+		private static final boolean CONTACTS_LOADED_DEFAULT_VALUE = false;
+
+		private static final String CONTACTS_EMPTY_KEY = "contactsEmpty";
+		private static final boolean CONTACTS_EMPTY_DEFAULT_VALUE = true;
+
+		private boolean readContactsPermissionAcquired;
+		private boolean contactsLoaded;
+		private boolean contactsEmpty;
+		
+		
+		private void saveInstanceState(Bundle outState) {
+			Logging.logEntrance();
+
+			outState.putBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, readContactsPermissionAcquired);
+			outState.putBoolean(CONTACTS_LOADED_KEY, contactsLoaded);
+			outState.putBoolean(CONTACTS_EMPTY_KEY, contactsEmpty);
+		}
+		
+		private void restoreInstanceState(Bundle savedInstanceState) {
+			if (savedInstanceState == null) {
+				Logging.logEntrance("Bundle savedInstanceState == null");
+				return;
+			}
+			Logging.logEntrance();
+
+			readContactsPermissionAcquired = savedInstanceState.getBoolean(READ_CONTACTS_PERMISSION_ACQUIRED_KEY, READ_CONTACTS_PERMISSION_ACQUIRED_DEFAULT_VALUE);
+			contactsLoaded = savedInstanceState.getBoolean(CONTACTS_LOADED_KEY, CONTACTS_LOADED_DEFAULT_VALUE);
+			contactsEmpty = savedInstanceState.getBoolean(CONTACTS_EMPTY_KEY, CONTACTS_EMPTY_DEFAULT_VALUE);
+		}
 	}
 
 	private class FragmentUtils implements PermissionDialogFragment.PositiveClickListener {
@@ -148,7 +162,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 
 		public void onPositiveClick() {
 			Logging.logEntrance();
-			readContactsPermissionAcquired = true;
+			activityState.readContactsPermissionAcquired = true;
 
 			getFragmentManager()
 					.beginTransaction()
@@ -160,7 +174,7 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		}
 
 		private void setOnContactsListItemClickListener(OnItemClickListener listener) {
-			ContactsList contactsList = (ContactsList) getFragmentManager().findFragmentByTag(FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG);
+			ContactsListFragment contactsList = (ContactsListFragment) getFragmentManager().findFragmentByTag(FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG);
 			if (contactsList != null) {
 				contactsList.setOnItemClickListener(listener);
 			}
@@ -187,14 +201,14 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			new Handler().post(new Runnable() {
 				
 				public void run() {
-					contactsLoaded = true;
-					contactsEmpty = isContactsEmpty(result);
+					activityState.contactsLoaded = true;
+					activityState.contactsEmpty = isContactsEmpty(result);
 
 					Fragment fragment;
 					String fragmentTag;
 					
-					if (!contactsEmpty) {
-						fragment = ContactsList.newInstance(HomeActivity.this, result.data);
+					if (!activityState.contactsEmpty) {
+						fragment = ContactsListFragment.newInstance(HomeActivity.this, result.data);
 						fragmentTag = FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG;
 					} else {
 						fragment = NoContactsFragment.newInstance();
