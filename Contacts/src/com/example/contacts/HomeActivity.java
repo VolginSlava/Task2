@@ -4,9 +4,12 @@ import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,15 +17,16 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.contacts.fragments.ContactsListFragment;
 import com.example.contacts.fragments.NoContactsFragment;
 import com.example.contacts.fragments.PermissionDialogFragment;
 import com.example.contacts.fragments.ProgressDialogFragment;
-import com.example.contacts.loaders.ContactsLoader;
-import com.example.contacts.loaders.Result;
-import com.example.contacts.testpackage.TestClass;
+import com.example.contacts.testpackage.ContactNamesLoader;
+import com.example.contacts.testpackage.EmailLoader;
+import com.example.contacts.testpackage.PhotosLoader;
 import com.example.contacts.tools.Logging;
 
 
@@ -30,7 +34,8 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 
 	private ActivityState activityState = new ActivityState();
 	private FragmentUtils fragmentUtils = new FragmentUtils();
-	private LoaderUtils loaderUtils = new LoaderUtils();
+//	private LoaderUtils loaderUtils = new LoaderUtils();
+	private NewLoaderUtils newLoaderUtils = new NewLoaderUtils();
 
 
 	@Override
@@ -45,15 +50,16 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 			askForReadContactsPermission();
 		}
 		if (activityState.readContactsPermissionAcquired && !activityState.contactsLoaded) {
-			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
+//			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);	// TODO
+			newLoaderUtils.loadContacts();
 		}
 		if (activityState.contactsLoaded && !activityState.contactsEmpty) {
 			fragmentUtils.setOnContactsListItemClickListener(this);
 		}
 
 		
-		new TestClass(this); // TODO
-		
+		// newLoaderUtils.loadContacts();
+		// new TestClass(this);
 	}
 
 	private void askForReadContactsPermission() {
@@ -176,7 +182,8 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 					.commit();
 			getFragmentManager().executePendingTransactions();
 
-			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);
+//			getLoaderManager().initLoader(LoaderUtils.LOADER_ID, new Bundle(), loaderUtils);	// TODO
+			newLoaderUtils.loadContacts();
 		}
 
 		private void setOnContactsListItemClickListener(OnItemClickListener listener) {
@@ -187,58 +194,179 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		}
 	}
 
-	private class LoaderUtils implements LoaderCallbacks<Result<List<ContactData>>> {
+	private class NewLoaderUtils implements LoaderCallbacks<Cursor> {
 
-		private static final int LOADER_ID = 1;
-		private static final int EMAIL_LIADER_ID = 2;
-		private static final int CONTACTS_LIADER_ID = 3;
+		private int loadersRemained;
+		private SparseArray<ContactData> contacts;
+		private ArrayList<ContactData> contactsList;
 
-		public Loader<Result<List<ContactData>>> onCreateLoader(int id, Bundle args) {
+		private void loadContacts() {
 			Logging.logEntrance();
-			switch (id) {
-			case 1:
-				return new ContactsLoader(HomeActivity.this);
-			default:
-				return null;
-			}
+
+			loadersRemained = Loaders.values().length;
+			contacts = new SparseArray<ContactData>();
+			contactsList = new ArrayList<ContactData>();
+
+			getLoaderManager().initLoader(Loaders.CONTACTS_LOADER.ordinal(), null, this);
 		}
 
-		public void onLoadFinished(Loader<Result<List<ContactData>>> loader, final Result<List<ContactData>> result) {
+		private void onLoadContactsComplete(final List<ContactData> contacts) {
 			Logging.logEntrance();
 
+			if (contacts != null) {
+				for (ContactData data : contactsList) {
+					Log.i("", data.toString());
+				}
+			}
+			Log.i("", "Size: " + contactsList.size());
+
+			// TODO
 			new Handler().post(new Runnable() {
-				
+
 				public void run() {
 					activityState.contactsLoaded = true;
-					activityState.contactsEmpty = isContactsEmpty(result);
+					activityState.contactsEmpty = (contacts == null || contacts.size() == 0);
 
 					Fragment fragment;
 					String fragmentTag;
-					
+
 					if (!activityState.contactsEmpty) {
-						fragment = ContactsListFragment.newInstance(HomeActivity.this, result.data);
+						fragment = ContactsListFragment.newInstance(HomeActivity.this, contacts);
 						fragmentTag = FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG;
 					} else {
 						fragment = NoContactsFragment.newInstance();
 						fragmentTag = FragmentUtils.NO_CONTACTS_FRAGMENT_TAG;
 					}
-					
-					getFragmentManager()
-							.beginTransaction()
-							.replace(R.id.fragment, fragment, fragmentTag)
-							.commit();
+
+					getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, fragmentTag).commit();
 				}
 			});
 		}
 
-		public void onLoaderReset(Loader<Result<List<ContactData>>> loader) {
+		public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 			Logging.logEntrance();
-			// TODO Auto-generated method stub
+			if (!isInRange(id, 0, Loaders.values().length)) {
+				return null;
+			}
+			switch (Loaders.values()[id]) {
+			case CONTACTS_LOADER:
+				return new ContactNamesLoader(HomeActivity.this);
+			case EMAILS_LOADER:
+				return new EmailLoader(HomeActivity.this);
+			case PHOTOS_LOADER:
+				return new PhotosLoader(HomeActivity.this);
+
+			default:
+				return null;
+			}
 		}
 
-		private boolean isContactsEmpty(Result<List<ContactData>> data) {
-			return data == null || data.data == null || data.data.size() == 0;
+		public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+			Logging.logEntrance("loadersRemained: " + (loadersRemained - 1));
+			loadersRemained--;
+
+			int id = loader.getId();
+			if (!isInRange(id, 0, Loaders.values().length)) {
+				return;
+			}
+
+			switch (Loaders.values()[id]) {
+			case CONTACTS_LOADER:
+				onContactsLoaded(data);
+				break;
+			case EMAILS_LOADER:
+				onEmailLoaded(data);
+				break;
+			case PHOTOS_LOADER:
+				onPhotosLoaded(data);
+				break;
+
+			default:
+				break;
+			}
+
+			if (loadersRemained == 0) {
+				onLoadContactsComplete(contactsList);
+			}
 		}
+
+
+		// checks condition: id in [from, to)
+		private boolean isInRange(int id, int from, int to) {
+			return id >= from && id < to;
+		}
+
+		private void onContactsLoaded(Cursor data) {
+			// TODO Auto-generated method stub
+			Logging.logEntrance();
+
+			if (data.getCount() == 0) {
+				onLoadContactsComplete(null);
+				return;
+			}
+
+			loadAdditionalInfo();
+
+			while (data.moveToNext()) {
+				int id = data.getInt(0);
+				String name = data.getString(1);
+
+				getContact(id).setName(name);
+			}
+		}
+
+		private void onEmailLoaded(Cursor data) {
+			Logging.logEntrance();
+
+			while (data.moveToNext()) {
+				int id = data.getInt(0);
+				String email = data.getString(1);
+
+				getContact(id).setEmail(email);
+			}
+		}
+
+		private void onPhotosLoaded(Cursor data) {
+			Logging.logEntrance();
+
+			while (data.moveToNext()) { // TODO
+				int id = data.getInt(0);
+				String photo = data.getString(1);
+
+				getContact(id).setName(photo);
+			}
+		}
+
+		private ContactData getContact(int id) {
+			Logging.logEntrance("id: " + id);
+			ContactData data = contacts.get(id);
+			if (data == null) {
+				data = addNewContact(id);
+			}
+			return data;
+			// return contacts.get(id, addNewContact(id));
+		}
+
+		private ContactData addNewContact(int id) {
+			ContactData contactData = new ContactData();
+			contacts.put(id, contactData);
+			contactsList.add(contactData);
+			return contactData;
+		}
+
+		private void loadAdditionalInfo() {
+			getLoaderManager().initLoader(Loaders.EMAILS_LOADER.ordinal(), null, this);
+			getLoaderManager().initLoader(Loaders.PHOTOS_LOADER.ordinal(), null, this);
+		}
+
+		public void onLoaderReset(Loader<Cursor> loader) {
+			// TODO Auto-generated method stub
+			Logging.logEntrance();
+		}
+	}
+
+	private static enum Loaders {
+		CONTACTS_LOADER, EMAILS_LOADER, PHOTOS_LOADER
 	}
 
 	@Override
@@ -260,5 +388,64 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
+	// @Deprecated
+//	private class LoaderUtils implements LoaderCallbacks<Result<List<ContactData>>> {
+//
+//		private static final int LOADER_ID = 1;
+//		private static final int EMAIL_LOADER_ID = 3;
+//		private static final int CONTACTS_LOADER_ID = 2;
+//
+//		public Loader onCreateLoader(int id, Bundle args) {
+//			Logging.logEntrance();
+//			switch (id) {
+//			case LOADER_ID:
+//				return new ContactsLoader(HomeActivity.this);
+//			case EMAIL_LOADER_ID:
+//				return new EmailLoader(HomeActivity.this);
+//			case CONTACTS_LOADER_ID:
+//				return new ContactNamesLoader(HomeActivity.this);
+//
+//			default:
+//				return null;
+//			}
+//		}
+//
+//		public void onLoadFinished(Loader<Result<List<ContactData>>> loader, final Result<List<ContactData>> result) {
+//			Logging.logEntrance();
+//
+//			new Handler().post(new Runnable() {
+//
+//				public void run() {
+//					activityState.contactsLoaded = true;
+//					activityState.contactsEmpty = isContactsEmpty(result);
+//
+//					Fragment fragment;
+//					String fragmentTag;
+//
+//					if (!activityState.contactsEmpty) {
+//						fragment = ContactsListFragment.newInstance(HomeActivity.this, result.data);
+//						fragmentTag = FragmentUtils.CONTACTS_LIST_FRAGMENT_TAG;
+//					} else {
+//						fragment = NoContactsFragment.newInstance();
+//						fragmentTag = FragmentUtils.NO_CONTACTS_FRAGMENT_TAG;
+//					}
+//
+//					getFragmentManager()
+//							.beginTransaction()
+//							.replace(R.id.fragment, fragment, fragmentTag)
+//							.commit();
+//				}
+//			});
+//		}
+	//
+	// public void onLoaderReset(Loader<Result<List<ContactData>>> loader) {
+	// Logging.logEntrance();
+	// // TODO Auto-generated method stub
+	// }
+	//
+	// private boolean isContactsEmpty(Result<List<ContactData>> data) {
+	// return data == null || data.data == null || data.data.size() == 0;
+	// }
+	// }
 }

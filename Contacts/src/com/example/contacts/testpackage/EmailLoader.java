@@ -5,17 +5,16 @@ import android.content.CursorLoader;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Contacts;
 
 public class EmailLoader extends CursorLoader {
 
-	private static Uri uri = ContactsContract.Data.CONTENT_URI;
-	private static String[] projection = { Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.TIMES_CONTACTED };
-	private static String selection = ContactsContract.Data.MIMETYPE + " ='" + Email.CONTENT_ITEM_TYPE + "'";
-	private static String[] selectionArgs = null;
-	private static String sortOrder = null;
+	private static final Uri CONTENT_URI = ContactsContract.Data.CONTENT_URI;
+	private static final String[] PROJECTION = { ContactsContract.Data.CONTACT_ID, ContactsContract.Data.DATA1 };
+	private static final String SELECTION = String.format("%s = ?", ContactsContract.Data.MIMETYPE);
+	private static final String[] SELECTION_ARGS = { Email.CONTENT_ITEM_TYPE };
+	private static final String SORT_ORDER = null;
 
 	public EmailLoader(Context context) {
-		super(context, uri, projection, selection, selectionArgs, sortOrder);
+		super(context, CONTENT_URI, PROJECTION, SELECTION, SELECTION_ARGS, SORT_ORDER);
 	}
 }

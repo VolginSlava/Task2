@@ -43,6 +43,7 @@
 		android:paddingBottom="2pt"
 		
 		android:textSize="12sp"
+		android:textColor="@color/gray"
 		android:text="@string/contacts_list_item_email_dafault" />
 
 </RelativeLayout>

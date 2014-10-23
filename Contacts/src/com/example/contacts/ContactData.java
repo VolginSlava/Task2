@@ -13,6 +13,11 @@ public class ContactData implements Serializable {
 	private String name;
 	private String email;
 
+
+	public ContactData() {
+		Logging.logEntrance();
+	}
+
 	public ContactData(Image photo, String name, String email) {
 		// this.photo = photo;
 		this.name = name;

@@ -6,9 +6,8 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Email;
-import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -17,10 +16,13 @@ import com.example.contacts.tools.Logging;
 
 public class TestClass implements OnLoadCompleteListener<Cursor> {
 
-	private static final String[] PROJECTION = { Contacts._ID, Contacts.DISPLAY_NAME_PRIMARY, Contacts.TIMES_CONTACTED };
-	private static final String SELECTION = ContactsContract.Data.MIMETYPE + " ='" + Email.CONTENT_ITEM_TYPE + "'";
 
-	// Defines a variable for the search string
+	private static final Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
+	private static final String[] PROJECTION = { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY };
+	private static final String SELECTION = null;
+	private static final String[] SELECTION_ARGS = null;
+	private static final String SORT_ORDER = null;
+
 	
 	
 	private Activity activity;
@@ -40,8 +42,7 @@ public class TestClass implements OnLoadCompleteListener<Cursor> {
 		// Starts the query
 		// return new CursorLoader(getActivity(), Contacts.CONTENT_URI, null, null, null, null);
 
-		return new CursorLoader(getActivity(), ContactsContract.Data.CONTENT_URI, null, SELECTION, null, null);
-
+		return new CursorLoader(getActivity(), CONTENT_URI, PROJECTION, SELECTION, SELECTION_ARGS, SORT_ORDER);
 	}
 
 
@@ -63,10 +64,6 @@ public class TestClass implements OnLoadCompleteListener<Cursor> {
 
 		loader.registerListener(1, this);
 		loader.startLoading();
-		// TextUtils.
-		// getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder)
-		// String str = ContactsContract.RawContacts.;
-		// Logging.logEntrance("test!!! " + str);
 	}
 
 	public void onLoadComplete(Loader<Cursor> loader, Cursor cursor) {
@@ -82,11 +79,6 @@ public class TestClass implements OnLoadCompleteListener<Cursor> {
 					Log.i("", msg);
 				}
 			}
-			// ArrayList<String> values = new ArrayList<String>();
-			// for (int i = 0; i < cursor.getColumnCount(); i++) {
-			// values.add(cursor.getString(i));
-			// }
-			// Logging.logEntrance(contactsNum + ") " + values);
 		}
 		Logging.logEntrance("n = " + contactsNum);
 
@@ -95,34 +87,5 @@ public class TestClass implements OnLoadCompleteListener<Cursor> {
 			colNames.add(cursor.getColumnName(i));
 		}
 		Logging.logEntrance(colNames.toString());
-
-		// TODO Auto-generated method stub
-
 	}
-
-	// Previous code
-	// public void onLoadComplete(Loader<Cursor> loader, Cursor cursor) {
-	// Logging.logEntrance(cursor.getCount() + "");
-	//
-	// int contactsNum = 0;
-	// while (cursor.moveToNext()) {
-	// contactsNum++;
-	//
-	// ArrayList<String> values = new ArrayList<String>();
-	// for (int i = 0; i < cursor.getColumnCount(); i++) {
-	// values.add(cursor.getString(i));
-	// }
-	// Logging.logEntrance(contactsNum + ") " + values);
-	// }
-	// Logging.logEntrance("n = " + contactsNum);
-	//
-	// ArrayList<String> colNames = new ArrayList<String>();
-	// for (int i = 0; i < cursor.getColumnCount(); i++) {
-	// colNames.add(cursor.getColumnName(i));
-	// }
-	// Logging.logEntrance(colNames.toString());
-	//
-	// // TODO Auto-generated method stub
-	//
-	// }
 }
