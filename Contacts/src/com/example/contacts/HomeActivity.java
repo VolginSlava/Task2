@@ -56,10 +56,6 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		if (activityState.contactsLoaded && !activityState.contactsEmpty) {
 			fragmentUtils.setOnContactsListItemClickListener(this);
 		}
-
-		
-		// newLoaderUtils.loadContacts();
-		// new TestClass(this);
 	}
 
 	private void askForReadContactsPermission() {
