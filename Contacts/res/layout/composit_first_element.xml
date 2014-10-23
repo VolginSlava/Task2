@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="180dp"
+	android:padding="4pt"
+	android:background="@color/gray"
+	 >
+	
+	
+	
+	<ImageView 
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:src="@drawable/ic_launcher"
+		/>
+	
+	
+	<DigitalClock 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		
+		android:layout_centerHorizontal="true"
+		android:layout_centerVertical="true"
+		
+		android:textSize="32sp"
+		/>
+	
+	<TextView
+		android:id="@+id/composit_first_element_am"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentBottom="true"
+		
+		android:paddingLeft="10pt"
+		
+		android:text="AM" />
+	
+	<TextView
+		android:id="@+id/composit_first_element_noon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:layout_alignParentBottom="true"
+		
+		android:text="NOON" />
+	
+	<TextView
+		android:id="@+id/composit_first_element_pm"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
+		android:layout_alignParentBottom="true"
+		
+		android:paddingRight="10pt"
+		
+		android:text="PM" />
+	
+	
+	
+	
+	<TextView
+		android:id="@+id/composit_first_element_max"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentTop="true"
+		
+		android:paddingTop="10pt"
+		
+		android:text="MAX" />
+	
+	
+	<TextView
+		android:id="@+id/composit_first_element_med"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_centerVertical="true"
+		
+		android:text="MED" />
+	
+	
+	<TextView
+		android:id="@+id/composit_first_element_min"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
+		android:layout_alignParentBottom="true"
+		
+		android:paddingBottom="10pt"
+		
+		android:text="MIN" />
+	
+	
+	
+</RelativeLayout>

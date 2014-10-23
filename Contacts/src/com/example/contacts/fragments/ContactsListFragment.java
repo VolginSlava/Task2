@@ -25,7 +25,7 @@ public class ContactsListFragment extends Fragment {
 		Logging.logEntrance();
 
 		ContactsListFragment list = new ContactsListFragment();
-		list.setOnItemClickListener(onItemClickListener);
+		list.setOnItemClickListener(onItemClickListener); // TODO wrong solution
 
 		Bundle args = new Bundle();
 		args.putSerializable(ContactsListFragment.LIST_ITEMS_KEY, (Serializable) data);

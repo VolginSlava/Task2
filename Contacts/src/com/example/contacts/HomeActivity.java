@@ -208,14 +208,14 @@ public class HomeActivity extends ActionBarActivity implements OnItemClickListen
 		private void onLoadContactsComplete(final List<ContactData> contacts) {
 			Logging.logEntrance();
 
-			if (contacts != null) {// TODO remove maybe
+			if (contacts != null) {
 				for (ContactData data : contactsList) {
 					Log.i("", data.toString());
 				}
 			}
 			Log.i("", "Size: " + contactsList.size());
 
-			new Handler().post(new Runnable() {
+			new Handler().post(new Runnable() { // TODO BAD work around
 
 				public void run() {
 					activityState.contactsLoaded = true;
