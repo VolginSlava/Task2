@@ -1,4 +1,4 @@
-package com.example.contacts.testpackage;
+package com.example.contacts.loaders;
 
 import android.content.Context;
 import android.content.CursorLoader;

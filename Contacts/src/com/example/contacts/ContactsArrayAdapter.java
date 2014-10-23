@@ -2,11 +2,13 @@ package com.example.contacts;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -49,17 +51,17 @@ public class ContactsArrayAdapter extends ArrayAdapter<ContactData> {
 
 	private void initItem(View view, ContactData m) {
 		Logging.logEntrance();
-		// ImageView photoView = (ImageView) view.findViewById(R.id.contacts_list_item_image); // TODO
+		ImageView photoView = (ImageView) view.findViewById(R.id.contacts_list_item_image); // TODO
 		TextView nameView = (TextView) view.findViewById(R.id.contacts_list_item_contact_name);
 		TextView emailView = (TextView) view.findViewById(R.id.contacts_list_item_contact_email);
 
-		// Image photo = (Image) getArguments().getSerializable(PHOTO_KEY); // TODO
+		Uri photoUri = m.getPhotoUri();
 		String name = m.getName();
 		String email = m.getEmail();
 
-		// if (photoView != null) // TODO
-		// photoView ...
-
+		if (photoView != null && photoUri != null) {
+			photoView.setImageURI(photoUri);
+		}
 		if (name != null) {
 			nameView.setText(name);
 		}

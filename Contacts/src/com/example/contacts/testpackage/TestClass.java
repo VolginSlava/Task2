@@ -8,6 +8,7 @@ import android.content.Loader.OnLoadCompleteListener;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Photo;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -17,10 +18,10 @@ import com.example.contacts.tools.Logging;
 public class TestClass implements OnLoadCompleteListener<Cursor> {
 
 
-	private static final Uri CONTENT_URI = ContactsContract.Contacts.CONTENT_URI;
-	private static final String[] PROJECTION = { ContactsContract.Contacts._ID, ContactsContract.Contacts.DISPLAY_NAME_PRIMARY };
-	private static final String SELECTION = null;
-	private static final String[] SELECTION_ARGS = null;
+	private static final Uri CONTENT_URI = ContactsContract.Data.CONTENT_URI;
+	private static final String[] PROJECTION = { ContactsContract.Data.CONTACT_ID, ContactsContract.Data.PHOTO_URI };
+	private static final String SELECTION = String.format("%s = ?", ContactsContract.Data.MIMETYPE);
+	private static final String[] SELECTION_ARGS = { Photo.CONTENT_ITEM_TYPE };
 	private static final String SORT_ORDER = null;
 
 	

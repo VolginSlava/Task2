@@ -1,6 +1,6 @@
 package com.example.contacts;
 
-import android.media.Image;
+import android.net.Uri;
 
 import java.io.Serializable;
 
@@ -9,7 +9,8 @@ import com.example.contacts.tools.Logging;
 public class ContactData implements Serializable {
 	private static final long serialVersionUID = -5158009157779590079L;
 
-	// private Image photo;
+	// private Uri photoUri; // to support serialization
+	private String photoUri;
 	private String name;
 	private String email;
 
@@ -18,21 +19,14 @@ public class ContactData implements Serializable {
 		Logging.logEntrance();
 	}
 
-	public ContactData(Image photo, String name, String email) {
-		// this.photo = photo;
-		this.name = name;
-		this.email = email;
 
-		Logging.logEntrance(this.toString());
+	public Uri getPhotoUri() {
+		return photoUri != null ? Uri.parse(photoUri) : null;
 	}
 
-	// public Image getPhoto() {
-	// return photo;
-	// }
-	//
-	// public void setPhoto(Image photo) {
-	// this.photo = photo;
-	// }
+	public void setPhotoUri(Uri photo) {
+		this.photoUri = photo != null ? photo.toString() : null;
+	}
 
 	public String getName() {
 		return name;
@@ -52,6 +46,6 @@ public class ContactData implements Serializable {
 
 	@Override
 	public String toString() {
-		return String.format("[name=%s, email=%s]", name, email);
+		return String.format("[name=%s, email=%s, uri=%s]", name, email, photoUri);
 	}
 }

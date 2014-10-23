@@ -7,15 +7,9 @@
 
 	<ImageView
 		android:id="@+id/contacts_list_item_image"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:paddingRight="10pt"
-		
-		android:minHeight="60dp"
-		android:maxHeight="60dp"
-		
-		android:minWidth="60dp"
-		android:maxWidth="60dp"
+		android:layout_width="68dp"
+		android:layout_height="68dp"
+		android:adjustViewBounds="true"
 		
 		android:src="@drawable/ic_launcher"
 		android:contentDescription="@string/contacts_list_item_image_description" />
@@ -26,7 +20,11 @@
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:padding="2pt"
+		android:paddingLeft="12pt"
+		android:paddingRight="2pt"
+		android:paddingTop="2pt"
+		android:paddingBottom="2pt"
+		
 		android:textSize="20sp"
 		android:text="@string/contacts_list_item_name_default" />
 
@@ -37,7 +35,7 @@
 		android:layout_below="@id/contacts_list_item_contact_name"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:paddingLeft="12pt"
+		android:paddingLeft="22pt"
 		android:paddingRight="2pt"
 		android:paddingTop="2pt"
 		android:paddingBottom="2pt"
