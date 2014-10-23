@@ -20,7 +20,7 @@
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:paddingLeft="12pt"
+		android:paddingLeft="8pt"
 		android:paddingRight="2pt"
 		android:paddingTop="2pt"
 		android:paddingBottom="2pt"
@@ -35,7 +35,7 @@
 		android:layout_below="@id/contacts_list_item_contact_name"
 		android:layout_toRightOf="@id/contacts_list_item_image"
 		
-		android:paddingLeft="22pt"
+		android:paddingLeft="18pt"
 		android:paddingRight="2pt"
 		android:paddingTop="2pt"
 		android:paddingBottom="2pt"
