@@ -24,5 +24,13 @@
 	
 	<string name="email_letter_subject_template">Hi, %s!</string>
 	<string name="email_letter_text_template">Sent from new Contacts App to your e-mail (%s).</string>
+	<string name="composit_first_element_background">background</string>
+	<string name="composit_first_element_title">Title</string>
+	<string name="composit_first_element_am">AM</string>
+	<string name="composit_first_element_noon">NOON</string>
+	<string name="composit_first_element_pm">PM</string>
+	<string name="composit_first_element_max">MAX</string>
+	<string name="composit_first_element_med">MED</string>
+	<string name="composit_first_element_min">MIN</string>
 	
 </resources>
