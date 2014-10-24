@@ -24,6 +24,7 @@
 	
 	<string name="email_letter_subject_template">Hi, %s!</string>
 	<string name="email_letter_text_template">Sent from new Contacts App to your e-mail (%s).</string>
+	
 	<string name="composit_first_element_background">background</string>
 	<string name="composit_first_element_title">Title</string>
 	<string name="composit_first_element_am">AM</string>
@@ -32,5 +33,24 @@
 	<string name="composit_first_element_max">MAX</string>
 	<string name="composit_first_element_med">MED</string>
 	<string name="composit_first_element_min">MIN</string>
+	
+	<string name="composit_small_element_icon">icon</string>
+	<string name="composit_small_element_title">Resting heart rate</string>
+	<string name="composit_small_element_numeric_value">68</string>
+	<string name="composit_small_element_unit">bpm</string>
+	
+	<string name="composit_large_element_icon">icon</string>
+	<string name="composit_large_element_title">Exercise zones</string>
+	<string name="composit_large_element_first_numeric_value">40</string>
+	<string name="composit_large_element_first_unit">minutes</string>
+	<string name="composit_large_element_second_numeric_value">226</string>
+	<string name="composit_large_element_second_unit">calories</string>
+	
+	<string name="composit_large_element_secondary_data_first_value">0 min</string>
+	<string name="composit_large_element_secondary_data_first_info">Peak</string>
+	<string name="composit_large_element_secondary_data_second_value">1 min</string>
+	<string name="composit_large_element_secondary_data_second_info">Cardio</string>
+	<string name="composit_large_element_secondary_data_third_value">39 min</string>
+	<string name="composit_large_element_secondary_data_third_info">Fat burn</string>
 	
 </resources>
