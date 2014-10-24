@@ -20,4 +20,7 @@
 	<color name="gray">#A0A0A0</color>
 	<color name="white">#FFFFFF</color>
 	<color name="white_semitransparent">#4AF0F0F0</color>
+	<color name="yellow_light">#FFFFDD</color>
+	<color name="gray_text">#A0A0A0</color>
+	
 </resources>
